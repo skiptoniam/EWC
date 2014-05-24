@@ -1,7 +1,4 @@
 EWC
 ===
-git init
-git add README.md
-git commit -m "first commit"
-git remote add origin git@github.com:skiptoniam/EWC.git
-git push -u origin master
+
+A little shiny app to explore species competition via football
