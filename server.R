@@ -27,13 +27,6 @@ S1 <- c(1:10)
 S2 <- c(1:10)
 Y <- c(N1,N2,S1,S2)
 S1S2<-expand.grid(S1,S2)
-outMatS1S2 <- array(NA,dim=c(91,100,2))
-for(i in 1:100){
-  Y <- c(N1,N2,S1S2[i,1],S1S2[i,2])
-  outMatS1S2[,i,1] <- lsode(y=Y, times=t, func=comp)[,2]
-  outMatS1S2[,i,2] <- lsode(y=Y, times=t, func=comp)[,3]
-}
-
 
 comp <- function(t,y,par)
 {
@@ -61,6 +54,13 @@ comp <- function(t,y,par)
   
   return(list(as.vector(c(dN1,dN2,dS1,dS2))))
 }  
+
+outMatS1S2 <- array(NA,dim=c(91,100,2))
+for(i in 1:100){
+  Y <- c(N1,N2,S1S2[i,1],S1S2[i,2])
+  outMatS1S2[,i,1] <- lsode(y=Y, times=t, func=comp)[,2]
+  outMatS1S2[,i,2] <- lsode(y=Y, times=t, func=comp)[,3]
+}
 
 shinyServer(function(input, output){
   output$wcPlot <- renderPlot({
