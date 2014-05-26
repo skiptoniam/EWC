@@ -2,23 +2,17 @@ library(shiny)
 library(deSolve)
 
 # Define parameters
-r1 <-  1.6
-r2 <- .8 
-K12 <- 0.02  
-K11 <- 3.94  
-K22 <- 0.25  
-K21 <- 1.44  
 Y12 <- 2.18E8  
 Y11 <- 2.51E6  
 Y22 <- 2.59E7  
 Y21 <- 4.2E6   
 rat1 <- Y12/Y11
 rat2 <- Y22/Y21
-oS1 <- 4 # input conc Si
-oS2 <- 20 # input conc PO4
-f <- 0.25   # flow rate (/day)
-D <- log(1/(1-f), 2.718) # dilution rate (aka true g.r.)
-params <- c(r1,r2,K11,K12,K21,K22,Y11,Y12,Y21,Y22,oS1,oS2,D,rat1,rat2)
+BB <- 4 # input conc BB
+MD <- 20 # input conc MD
+f <- 0.25
+D <- log(1/(1-f), 2.718) #
+params <- c(1.6,.8,3.94,.25,1.44,.25,Y11,Y12,Y21,Y22,oS1,oS2,D,rat1,rat2)
 t <- c(0:90)
 # Define initial conditions
 N1 <- 1000000   
