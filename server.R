@@ -1,5 +1,40 @@
 library(shiny)
 library(deSolve)
+
+# Define parameters
+r1 <-  1.6
+r2 <- .8 
+K12 <- 0.02  
+K11 <- 3.94  
+K22 <- 0.25  
+K21 <- 1.44  
+Y12 <- 2.18E8  
+Y11 <- 2.51E6  
+Y22 <- 2.59E7  
+Y21 <- 4.2E6   
+rat1 <- Y12/Y11
+rat2 <- Y22/Y21
+oS1 <- 4 # input conc Si
+oS2 <- 20 # input conc PO4
+f <- 0.25   # flow rate (/day)
+D <- log(1/(1-f), 2.718) # dilution rate (aka true g.r.)
+params <- c(r1,r2,K11,K12,K21,K22,Y11,Y12,Y21,Y22,oS1,oS2,D,rat1,rat2)
+t <- c(0:90)
+# Define initial conditions
+N1 <- 1000000   
+N2 <- 1000000
+S1 <- c(1:10)
+S2 <- c(1:10)
+Y <- c(N1,N2,S1,S2)
+S1S2<-expand.grid(S1,S2)
+outMatS1S2 <- array(NA,dim=c(91,100,2))
+for(i in 1:100){
+  Y <- c(N1,N2,S1S2[i,1],S1S2[i,2])
+  outMatS1S2[,i,1] <- lsode(y=Y, times=t, func=comp)[,2]
+  outMatS1S2[,i,2] <- lsode(y=Y, times=t, func=comp)[,3]
+}
+
+
 comp <- function(t,y,par)
 {
   n1 <- y[1] 
@@ -26,40 +61,6 @@ comp <- function(t,y,par)
   
   return(list(as.vector(c(dN1,dN2,dS1,dS2))))
 }  
-
-# Define parameters
-r1 <-  1.6
-r2 <- .8 
-K12 <- 0.02  
-K11 <- 3.94  
-K22 <- 0.25  
-K21 <- 1.44  
-Y12 <- 2.18E8  
-Y11 <- 2.51E6  
-Y22 <- 2.59E7  
-Y21 <- 4.2E6   
-rat1 <- Y12/Y11
-rat2 <- Y22/Y21
-oS1 <- 4 # input conc Si
-oS2 <- 20 # input conc PO4
-f <- 0.25   # flow rate (/day)
-D <- log(1/(1-f), 2.718) # dilution rate (aka true g.r.)
-params <- c(r1,r2,K11,K12,K21,K22,Y11,Y12,Y21,Y22,oS1,oS2,D,rat1,rat2)
-t <- c(0:90)
-# Define initial conditions
-N1 <- 1000000   
-N2 <- 1000000
-Y <- c(N1,N2,S1,S2)
-S1 <- c(1:10)
-S2 <- c(1:10)
-S1S2<-expand.grid(S1,S2)
-outMatS1S2 <- array(NA,dim=c(91,100,2))
-for(i in 1:100){
-    Y <- c(N1,N2,S1S2[i,1],S1S2[i,2])
-    outMatS1S2[,i,1] <- lsode(y=Y, times=t, func=comp)[,2]
-    outMatS1S2[,i,2] <- lsode(y=Y, times=t, func=comp)[,3]
-}
-
 
 shinyServer(function(input, output){
   output$wcPlot <- renderPlot({
